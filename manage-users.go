@@ -8,13 +8,11 @@ import "io"
 import "strings"
 import "path/filepath"
 
-//import "bufio"
 import "crypto/sha1"
 import "regexp"
 
 import "io/ioutil"
 import "github.com/davidgamba/go-getoptions"
-import "github.com/davidgamba/go-utils/fileutils"
 
 var user_file_dir = string(filepath.Separator) + "tmp" + string(filepath.Separator) + "CSI"
 var user_service_file = "user-service.properties"
@@ -50,12 +48,11 @@ func main() {
 		user_file_dir = dir
 	}
 
-	writer, err := os.OpenFile(user_file_dir+string(filepath.Separator)+user_service_file, os.O_RDWR|os.O_APPEND, 0600)
+	writer, err := os.OpenFile(user_file_dir+string(filepath.Separator)+user_service_file, os.O_RDWR|os.O_APPEND, 0666)
 	if err != nil {
-		fmt.Println(err)
 		if os.IsNotExist(err) {
 			fmt.Printf("[INFO] File Doesn't Exist\n")
-			os.MkdirAll(user_file_dir, 0777)
+			os.MkdirAll(user_file_dir, 0755)
 			writer, err := os.Create(user_file_dir + string(filepath.Separator) + user_service_file)
 			check(err)
 			writer.Close()
@@ -68,7 +65,6 @@ func main() {
 	if opt.Called["user"] {
 		// check that password is also passed through
 		if opt.Called["password"] {
-			//fmt.Println(user_string)
 			add_user_to_user_service_file(user, password, role, true)
 		} else {
 			fmt.Println("[INFO] Password must also be set.")
@@ -95,6 +91,7 @@ func get_users_from_user_service_file() {
 
 func remove_user_from_user_service_file(username string) {
 
+	var filename string = user_file_dir + string(filepath.Separator) + user_service_file
 	var user_found bool = false
 	input, err := ioutil.ReadFile(user_file_dir + "/" + user_service_file)
 	check(err)
@@ -103,7 +100,7 @@ func remove_user_from_user_service_file(username string) {
 	result := []string{}
 
 	for i, line := range lines {
-		if !strings.Contains(line, username) {
+		if !strings.Contains(line, username+"=") {
 			result = append(result, lines[i])
 		} else {
 			user_found = true
@@ -112,11 +109,14 @@ func remove_user_from_user_service_file(username string) {
 
 	if user_found {
 		output := strings.Join(result, "\n")
-		err = ioutil.WriteFile("/tmp/CSI/user-service.properties2", []byte(output), 0644)
+		err = ioutil.WriteFile(filename+".tmp", []byte(output), 0755)
 		check(err)
 
-		err = fileutils.CopyFile("/tmp/CSI/user-service.properties2", "/tmp/CSI/user-service.properties")
+		err = os.Remove(filename)
 		check(err)
+		err = os.Rename(filename+".tmp", filename)
+		check(err)
+		fmt.Println("[INFO] " + username + " was deleted")
 	} else {
 		fmt.Println("[WARNING] user " + username + " was not found in user file")
 	}
@@ -156,8 +156,7 @@ func add_user_to_user_service_file(username string, password string, user_type s
 	fmt.Println("[INFO] Adding user: " + username)
 	file, err := os.OpenFile(user_file_dir+string(filepath.Separator)+user_service_file, os.O_RDWR|os.O_APPEND, 0600)
 	check(err)
-	n3, err := io.WriteString(file, user_string)
-	fmt.Printf("wrote %d bytes\n", n3)
+	io.WriteString(file, user_string)
 	file.Sync()
 	defer file.Close()
 }
