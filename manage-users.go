@@ -26,6 +26,8 @@ func main() {
 	var password string
 	var role string
 	var delete string
+	var csv string
+	var help bool
 
 	opt.BoolVar(&list, "list", false, "l", "panda")
 	opt.StringVar(&dir, "dir", "")
@@ -33,6 +35,8 @@ func main() {
 	opt.StringVar(&password, "password", "", "p")
 	opt.StringVar(&role, "role", "enduser", "r")
 	opt.StringVar(&delete, "delete", "", "d")
+	opt.StringVar(&csv, "csv", "")
+	opt.BoolVar(&help, "help", false, "h")
 
 	remaining, err := opt.Parse(os.Args[1:])
 
@@ -76,6 +80,35 @@ func main() {
 	}
 	if opt.Called["list"] {
 		get_users_from_user_service_file()
+	}
+	if opt.Called["csv"] {
+		add_users_from_file(csv)
+	}
+
+	if opt.Called["help"] {
+		print_help_synopsis()
+	}
+
+}
+
+func print_help_synopsis() {
+	fmt.Printf("# List users\nmanage-users -l | --list\n\t\t[--dir <users_file_dir>]\n\n")
+	fmt.Printf("# Delete Single Users\nmanage-users -d | --delete\n\t\t[--dir <users_file_dir>]\n\n")
+	fmt.Printf("# Add Single Users\nmanage-users -u | --user <username>\n\t\t-p | --password <password>\n\t\t[-r | --role <enduser|monitor|admin>]\n\t\t[--dir <users_file_dir>]\n\n")
+	fmt.Printf("#Add users from csv file (Format: user,password,role)\nmanage-users --csv <csv_file>\n\t\t[--dir <users_file_dir>]")
+	fmt.Printf("# show this message\nmanage-users -h")
+}
+
+func add_users_from_file(filename string) {
+	input, err := ioutil.ReadFile(filename)
+	check(err)
+	lines := strings.Split(string(input), "\n")
+	for _, line := range lines {
+		users := strings.Split(string(line), ",")
+		if users[0] != "" {
+			//	fmt.Printf("Username: %s Password: %s Role: %s\n", users[0], users[1], users[2])
+			add_user_to_user_service_file(users[0], users[1], users[2], true)
+		}
 	}
 }
 
