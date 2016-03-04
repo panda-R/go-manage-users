@@ -1,0 +1,166 @@
+'\" t
+.\"     Title: manage-users
+.\"    Author: David Gamba, david.gamba@calgaryscientific.com
+.\" Generator: DocBook XSL Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 04/16/2014
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "MANAGE\-USERS" "1" "04/16/2014" "\ \&" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+manage-users \- A script to manage ResolutionMD users located in the user\-service\&.properties file
+.SH "SYNOPSIS"
+.PP
+# List users
+.RS 4
+
+\fBmanage\-users\fR
+\fB\-l\fR|\fB\-\-list\fR
+[\fB\-\-dir\fR
+\fIusers_file_dir\fR]
+.RE
+.PP
+# Delete single user
+.RS 4
+
+\fBmanage\-users\fR
+\fB\-d\fR|\fB\-\-delete\fR
+\fIusername\fR
+[\fB\-\-dir\fR
+\fIusers_file_dir\fR]
+.RE
+.PP
+# Add single user
+.RS 4
+
+\fBmanage\-users\fR
+\fB\-u\fR|\fB\-\-user\fR
+\fIusername\fR
+\fB\-p\fR|\fB\-\-password\fR
+\fIpassword\fR
+[\fB\-r\fR|\fB\-\-role\fR
+\fIrole\fR] [\fB\-\-dir\fR
+\fIusers_file_dir\fR]
+.RE
+.PP
+# Add users from cvs file (Format: user,password,role)
+.RS 4
+
+\fBmanage\-users\fR
+\fB\-\-csv\fR
+\fIcsv_file\fR
+[\fB\-\-dir\fR
+\fIusers_file_dir\fR]
+.RE
+.PP
+# show synopsis only
+.RS 4
+
+\fBmanage\-users\fR
+\fB\-h\fR
+.RE
+.PP
+# show man page
+.RS 4
+
+\fBmanage\-users\fR
+\fB\-\-help\fR
+.RE
+.SH "DESCRIPTION"
+.sp
+If given a \fBcomma separated value\fR \fIcsv_file\fR (with format: user,password,role) it will use the users in that file to add user accounts to the \fBuser\-service\&.properties\fR file\&.
+.sp
+If given a \fIusername\fR to delete it will remove that username from the \fBuser\-service\&.properties\fR file\&.
+.sp
+If given a \fIusername\fR and \fIpassword\fR (and optionally a \fIrole\fR) it will add that username to the \fBuser\-service\&.properties\fR file\&.
+.SH "OPTIONS"
+.PP
+\fB\-\-dir\fR \fIusers_file_dir\fR
+.RS 4
+Path to location of the
+\fBuser\-service\&.properties\fR
+file (e\&.g\&. tenant dir)\&.
+.sp
+Defaults to
+/opt/CSI/PureWeb/Server/webapp/WEB\-INF
+if it exists\&. Else it defaults to the current directory\&.
+.RE
+.PP
+\fB\-l\fR | \fB\-\-list\fR
+.RS 4
+List users in the
+\fBuser\-service\&.properties\fR
+file\&.
+.RE
+.PP
+\fB\-d\fR | \fB\-\-delete\fR \fIusername\fR
+.RS 4
+deletes username
+.RE
+.PP
+\fB\-u\fR | \fB\-\-user\fR \fIusername\fR
+.RS 4
+username
+.RE
+.PP
+\fB\-r\fR | \fB\-\-role\fR \fIrole\fR
+.RS 4
+
+\fBenduser\fR
+(default),
+\fBadmin\fR
+or
+\fBmonitor\fR
+.RE
+.PP
+\fB\-p\fR | \fB\-\-password\fR \fIpassword\fR
+.RS 4
+password
+.RE
+.PP
+\fB\-\-csv\fR \fIcsv_file\fR
+.RS 4
+csv file to read\&. Format: user,password,role
+.RE
+.PP
+\fB\-h\fR | \fB\-\-help\fR
+.RS 4
+Show this message
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Show version number
+.RE
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2014 Calgary Scientific\&. All rights reserved\&.
+.SH "BUG REPORTS"
+.sp
+support@calgaryscientific\&.com
+.SH "AUTHOR"
+.PP
+\fBDavid Gamba, david\&.gamba@calgaryscientific\&.com\fR
+.RS 4
+Author.
+.RE
